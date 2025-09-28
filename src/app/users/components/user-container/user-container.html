@@ -1,6 +1,6 @@
 <!-- src/app/components/user-container/user-container.component.html -->
 <div class="user-management">
-  <h2>User Management</h2>
+  <h2><img class="logo" src="../../../../assets/logo.png" alt="">User Management</h2>
 
   <!-- Filters & Actions -->
   <div class="controls">
@@ -41,8 +41,10 @@
   </div>
 
   <!-- User Rows -->
-  <div class="user-list">
-    <app-user-row 
+  <!-- Replace the table header and user-list with this -->
+<div class="user-list">
+  <div class="user-cards" *ngIf="paginatedUsers.length > 0">
+    <app-user-row
       *ngFor="let user of paginatedUsers"
       [user]="user"
       (viewDetails)="showUserDetails(user)"
@@ -50,6 +52,10 @@
       (deleteUser)="deleteUser(user)">
     </app-user-row>
   </div>
+  <div *ngIf="paginatedUsers.length === 0" class="no-results">
+    No users found.
+  </div>
+</div>
 
   <!-- Pagination -->
   <div class="pagination" *ngIf="pages.length > 1">

@@ -1,7 +1,7 @@
 <div class="user-row">
   <div><input type="checkbox" /></div>
   <div class="name-col">
-    <img [src]="user.avatarUrl || 'https://via.placeholder.com/32'" alt="Avatar" class="avatar" />
+    <img [src]="user.avatarUrl || 'https://via.placeholder.com/32'" alt="Avatar" class="avatar" loading="lazy" />
     {{ user.fullName }}
   </div>
   <div>{{ user.email }}</div>

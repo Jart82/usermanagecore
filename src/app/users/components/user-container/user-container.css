@@ -1,3 +1,8 @@
+.logo {
+  height: 32px;
+  margin-right: 12px;
+  vertical-align: middle;
+}
 .user-management {
   background: #333;
   color: white;
@@ -69,5 +74,126 @@
         width: auto;
       }
     }
+  }
+}
+
+/* ==============
+   MOBILE RESPONSIVE
+   ============== */
+
+/* Tablet and below */
+@media (max-width: 900px) {
+  .controls {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .search-input,
+  .filter-select,
+  .rows-select {
+    min-width: auto;
+    width: 100%;
+  }
+
+  /* Simplified table: show only key columns */
+  .table-header,
+  .user-list app-user-row {
+    grid-template-columns: 48px 2fr 1fr 48px !important;
+  }
+
+  /* Hide less important columns on mobile */
+  .table-header > div:nth-child(3),
+  .table-header > div:nth-child(4),
+  .table-header > div:nth-child(5),
+  app-user-row .cell:nth-child(3),
+  app-user-row .cell:nth-child(4),
+  app-user-row .cell:nth-child(5) {
+    display: none;
+  }
+
+  /* Adjust padding for smaller screens */
+  .table-header,
+  .user-list app-user-row {
+    padding: 10px 12px !important;
+  }
+
+  .name-cell {
+    gap: 8px !important;
+  }
+
+  .avatar {
+    width: 28px !important;
+    height: 28px !important;
+  }
+}
+
+/* Mobile (small phones) */
+@media (max-width: 576px) {
+  .user-management {
+    padding: 16px !important;
+  }
+
+  .user-management h2 {
+    font-size: 20px !important;
+    margin-bottom: 16px !important;
+  }
+
+  .btn-primary,
+  .btn-secondary {
+    padding: 6px 12px !important;
+    font-size: 14px !important;
+  }
+
+  /* Stack action buttons */
+  .controls {
+    button {
+      width: 100%;
+      margin-top: 4px;
+    }
+  }
+
+  /* Pagination: hide page numbers, keep only prev/next */
+  .page-numbers {
+    display: none !important;
+  }
+
+  .rows-per-page {
+    margin-left: 0 !important;
+    font-size: 14px !important;
+  }
+
+  .rows-select {
+    width: 80px !important;
+    padding: 4px 8px !important;
+    font-size: 14px !important;
+  }
+}
+
+/* Add to user-row.component.css */
+@media (max-width: 900px) {
+  .user-row {
+    grid-template-columns: 48px 2fr 1fr 48px !important;
+    padding: 12px !important;
+  }
+
+  /* Ensure tap targets are large enough */
+  .more-btn {
+    width: 36px !important;
+    height: 36px !important;
+    font-size: 20px !important;
+  }
+
+  .checkbox-cell input {
+    width: 20px !important;
+    height: 20px !important;
+  }
+
+  /* Optional: Add subtle border for card-like feel */
+  .user-row {
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    margin-bottom: 8px;
+    background: var(--bg-secondary);
   }
 }
