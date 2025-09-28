@@ -1,0 +1,79 @@
+<!-- src/app/components/user-container/user-container.component.html -->
+<div class="user-management">
+  <h2>User Management</h2>
+
+  <!-- Filters & Actions -->
+  <div class="controls">
+    <input
+      type="text"
+      placeholder="Search items..."
+      [(ngModel)]="searchTerm"
+      (input)="onSearchChange()"
+      class="search-input"
+    />
+    
+    <select [(ngModel)]="filterPermissions" (change)="onPermissionChange()" class="filter-select">
+      <option value="">Permissions All</option>
+      <option value="Admin">Admin</option>
+      <option value="Contributor">Contributor</option>
+      <option value="Viewer">Viewer</option>
+    </select>
+
+    <select [(ngModel)]="filterJoined" (change)="onJoinedChange()" class="filter-select">
+      <option value="">Joined Anytime</option>
+      <option *ngFor="let year of joinedYears" [value]="year">{{ year }}</option>
+    </select>
+
+    
+    <button (click)="exportData()" class="btn-secondary">Export</button>
+    <button class="btn-primary" (click)="openNewUserModal()">+ New User</button>
+  </div>
+
+  <!-- Table Header -->
+  <div class="table-header">
+    <div><input type="checkbox" /></div>
+    <div>Full Name</div>
+    <div>Email Address</div>
+    <div>Location</div>
+    <div>Joined</div>
+    <div>Permissions</div>
+    <div></div>
+  </div>
+
+  <!-- User Rows -->
+  <div class="user-list">
+    <app-user-row 
+      *ngFor="let user of paginatedUsers"
+      [user]="user"
+      (viewDetails)="showUserDetails(user)"
+      (editUser)="editUser(user)"
+      (deleteUser)="deleteUser(user)">
+    </app-user-row>
+  </div>
+
+  <!-- Pagination -->
+  <div class="pagination" *ngIf="pages.length > 1">
+    <button (click)="prevPage()" [disabled]="currentPage === 1" class="page-nav"><</button>
+    
+    <div class="page-numbers">
+      <button
+        *ngFor="let page of pages"
+        (click)="goToPage(page)"
+        [class.active]="currentPage === page"
+        class="page-btn">
+        {{ page }}
+      </button>
+    </div>
+
+    <button (click)="nextPage()" [disabled]="currentPage === pages.length" class="page-nav">></button>
+
+    <div class="rows-per-page">
+      Show:
+      <select [(ngModel)]="rowsPerPage" (change)="applyFilters()" class="rows-select">
+        <option value="10">10 rows</option>
+        <option value="25">25 rows</option>
+        <option value="50">50 rows</option>
+      </select>
+    </div>
+  </div>
+</div>

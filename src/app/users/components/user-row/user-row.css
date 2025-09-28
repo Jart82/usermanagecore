@@ -1,0 +1,61 @@
+.user-row {
+  display: grid;
+  grid-template-columns: 40px 1fr 2fr 1fr 1fr 1fr 40px;
+  padding: 10px;
+  border-bottom: 1px solid #444;
+  align-items: center;
+
+  &:hover {
+    background: #2a2a2a;
+  }
+
+  .name-col {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    .avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+    }
+  }
+
+  .location-icon {
+    margin-right: 5px;
+  }
+
+  .permission-badge {
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: bold;
+
+    &.admin {
+      background: #e74c3c;
+      color: white;
+    }
+
+    &.contributor {
+      background: #3498db;
+      color: white;
+    }
+
+    &.viewer {
+      background: #2c3e50;
+      color: white;
+    }
+  }
+
+  .actions button {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #aaa;
+
+    &:hover {
+      color: white;
+    }
+  }
+}

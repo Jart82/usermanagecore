@@ -1,59 +1,63 @@
-# UserManageCore
+# User Management Dashboard
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.2.
+A clean, responsive, and fully functional User Management Dashboard built with Angular 17+ (Standalone Components) and vanilla CSS 
 
-## Development server
+## Features
+🔍 Search users by name or email
+🎛️ Filter by permission level (Admin, Contributor, Viewer)
+📅 Filter by join year (dynamically generated from data)
+📊 Pagination with configurable rows per page (10, 25, 50)
+📤 Export user data to CSV
+➕ Add New User (UI hook ready for implementation)
+🗑️ Delete users with confirmation
+🌓 Dark theme with clean, modern UI
+📱 Responsive design (works on desktop & tablet)
+🧪 40 realistic mock users included
 
-To start a local development server, run:
 
-```bash
-ng serve
-```
+## Architecture
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+### Folder Structure
+\`\`\`
+src/
+├── app/
+│   ├── model/
+│   │   └── user.interface.ts        # User data model
+│   ├── services/
+│   │   └── user.service.ts          # CRUD operations + reactive data
+│   ├── components/
+│   │   └── user-container/          # Main dashboard component
+│   │       ├── user-container.ts
+│   │       ├── user-container.html
+│   │       └── user-container.css
+│   └── db-data.ts                   # 40 mock user records
+├── assets/
+│   └── users/                       # Placeholder avatar images
+├── styles.css                       # Global dark theme variables
+└── app.config.ts                    # Standalone app config
+\`\`\`
 
-## Code scaffolding
+## Getting Started
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+### Prerequisites
+Node.js (v18+)
+Angular CLI (v17+)
 
-```bash
-ng generate component component-name
-```
+### Techstack
+Framework: Angular 17+ (Standalone Components)
+Styling: Pure CSS (no Tailwind, Bootstrap, or SCSS)
+State: Reactive BehaviorSubject for real-time updates
+Data: In-memory mock database (db-data.ts)
+Build: Angular CLI
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+### Installation
+1. Clone the repository
+2. Install dependencies: `npm install`
+3. Start development server: `ng serve`
+4. Open browser to `http://localhost:4200`
 
-```bash
-ng generate --help
-```
 
-## Building
 
-To build the project run:
 
-```bash
-ng build
-```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
 
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.

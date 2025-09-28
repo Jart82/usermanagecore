@@ -1,0 +1,14 @@
+<div class="user-row">
+  <div><input type="checkbox" /></div>
+  <div class="name-col">
+    <img [src]="user.avatarUrl || 'https://via.placeholder.com/32'" alt="Avatar" class="avatar" />
+    {{ user.fullName }}
+  </div>
+  <div>{{ user.email }}</div>
+  <div><span class="location-icon">📍</span> {{ user.location }}</div>
+  <div>{{ user.joinedDate | date:'mediumDate' }}</div>
+  <div><span class="permission-badge" [class]="user.permissions.toLowerCase()">{{ user.permissions }}</span></div>
+  <div class="actions">
+    <button (click)="onMoreClick()">⋯</button>
+  </div>
+</div>
