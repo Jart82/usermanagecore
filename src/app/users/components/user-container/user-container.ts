@@ -15,7 +15,6 @@ import { UserRow } from '../user-row/user-row';
 })
 export class UserContainer implements OnInit {
   users: User[] = [];
-  filteredUsers: User[] = [];
   paginatedUsers: User[] = [];
   searchTerm = '';
   filterPermissions = '';
@@ -23,137 +22,86 @@ export class UserContainer implements OnInit {
   currentPage = 1;
   rowsPerPage = 10;
   pages: number[] = [];
-  joinedYears: number[] = []; 
+  joinedYears: number[] = [];
 
   constructor(private userService: UserService) {}
 
   ngOnInit() {
-    this.loadUsers();
-  }
-
-  loadUsers() {
     this.userService.getUsers().subscribe(users => {
       this.users = users;
-      this.generateJoinedYears(); 
-      this.applyFilters();
+      this.updateView(); // Initial render
     });
   }
 
-  //Generate unique sorted years from user data
-  generateJoinedYears() {
-    const years = new Set(this.users.map(user => user.joinedDate.getFullYear()));
-    this.joinedYears = Array.from(years).sort((a, b) => b - a); // Desc: 2025, 2024, ...
+  // Pure UI method: delegates to service
+  updateView() {
+    const result = this.userService.getFilteredAndPaginatedUsers(
+      this.searchTerm,
+      this.filterPermissions,
+      this.filterJoined,
+      this.currentPage,
+      this.rowsPerPage
+    );
+
+    this.paginatedUsers = result.paginatedUsers;
+    this.pages = result.pages;
+    this.joinedYears = result.joinedYears;
   }
 
-  applyFilters() {
-    let filtered = this.users;
+  // Filter handlers (only update state + refresh view)
+  onSearchChange() { this.updateView(); }
+  onPermissionChange() { this.updateView(); }
+  onJoinedChange() { this.updateView(); }
 
-    if (this.searchTerm) {
-      const term = this.searchTerm.toLowerCase();
-      filtered = filtered.filter(u =>
-        u.fullName.toLowerCase().includes(term) ||
-        u.email.toLowerCase().includes(term)
-      );
-    }
-
-    if (this.filterPermissions) {
-      filtered = filtered.filter(u => u.permissions === this.filterPermissions);
-    }
-
-    if (this.filterJoined) {
-      const year = parseInt(this.filterJoined);
-      filtered = filtered.filter(u => u.joinedDate.getFullYear() === year);
-    }
-
-    this.filteredUsers = filtered;
-    this.currentPage = 1; // Reset to first page on filter
-    this.updatePagination();
-  }
-
-  updatePagination() {
-    const totalPages = Math.ceil(this.filteredUsers.length / this.rowsPerPage);
-    this.pages = Array.from({ length: totalPages }, (_, i) => i + 1);
-    
-    const start = (this.currentPage - 1) * this.rowsPerPage;
-    const end = start + this.rowsPerPage;
-    this.paginatedUsers = this.filteredUsers.slice(start, end);
-  }
-
-  // Filter change handlers
-  onSearchChange() {
-    this.applyFilters();
-  }
-
-  onPermissionChange() {
-    this.applyFilters();
-  }
-
-  onJoinedChange() {
-    this.applyFilters();
-  }
-
-  // Pagination
+  // Pagination (only update state + refresh view)
   prevPage() {
     if (this.currentPage > 1) {
       this.currentPage--;
-      this.updatePagination();
+      this.updateView();
     }
   }
 
   nextPage() {
     if (this.currentPage < this.pages.length) {
       this.currentPage++;
-      this.updatePagination();
+      this.updateView();
     }
   }
 
   goToPage(page: number) {
     this.currentPage = page;
-    this.updatePagination();
+    this.updateView();
   }
 
-  // Actions
-  showUserDetails(user: User) {
-    console.log('Show details:', user);
-  }
-
-  editUser(user: User) {
-    console.log('Edit user:', user);
-  }
-
+  // Actions (minimal logic)
   deleteUser(user: User) {
     if (confirm(`Delete ${user.fullName}?`)) {
       this.userService.deleteUser(user.id);
+      // Re-fetch users to update UI
+      this.userService.getUsers().subscribe(users => {
+        this.users = users;
+        this.updateView();
+      });
     }
   }
 
   exportData() {
-    // Simple CSV export
-    const headers = ['Full Name', 'Email', 'Location', 'Joined', 'Permissions'];
-    const rows = this.users.map(u => [
-      `"${u.fullName}"`,
-      `"${u.email}"`,
-      `"${u.location}"`,
-      `"${u.joinedDate.toISOString().split('T')[0]}"`,
-      `"${u.permissions}"`
-    ]);
-
-    let csvContent = 'data:text/csv;charset=utf-8,';
-    csvContent += [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
-
-    const encodedUri = encodeURI(csvContent);
+    const csvContent = this.userService.generateCSV(this.users);
+    const blob = new Blob(['\uFEFF', csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
-    link.setAttribute('href', encodedUri);
+    link.setAttribute('href', url);
     link.setAttribute('download', 'users.csv');
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+    URL.revokeObjectURL(url);
   }
 
-  openNewUserModal() {
-    console.log('+ New User clicked');
-    // Open modal (implement later)
-  }
+  // Placeholder methods
+  showUserDetails(user: User) { console.log('Show details:', user); }
+  editUser(user: User) { console.log('Edit user:', user); }
+  openNewUserModal() { console.log('+ New User clicked'); }
 
   
 }

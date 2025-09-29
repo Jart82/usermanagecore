@@ -25,7 +25,12 @@
     </select>
 
     
-    <button (click)="exportData()" class="btn-secondary">Export</button>
+    <button 
+      (click)="exportData()" 
+      class="btn-accent"
+      >
+      Export
+  </button>
     <button class="btn-primary" (click)="openNewUserModal()">+ New User</button>
   </div>
 
@@ -75,7 +80,7 @@
 
     <div class="rows-per-page">
       Show:
-      <select [(ngModel)]="rowsPerPage" (change)="applyFilters()" class="rows-select">
+      <select [(ngModel)]="rowsPerPage" (change)="updateView()" class="rows-select">
         <option value="10">10 rows</option>
         <option value="25">25 rows</option>
         <option value="50">50 rows</option>

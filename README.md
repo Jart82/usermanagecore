@@ -26,10 +26,10 @@ src/
 │   ├── services/
 │   │   └── user.service.ts          # CRUD operations + reactive data
 │   ├── components/
-│   │   └── user-container/          # Main dashboard component
-│   │       ├── user-container.ts
-│   │       ├── user-container.html
-│   │       └── user-container.css
+│   │   └── user/          # user dashboard components
+│   │       ├── user-container-component             # smart component
+│   │       ├── user-row-component                   # presentational component
+│   │       └── user-detail-component 
 │   └── db-data.ts                   # 40 mock user records
 ├── assets/
 │   └── users/                       # Placeholder avatar images
