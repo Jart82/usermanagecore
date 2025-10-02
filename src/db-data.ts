@@ -4,13 +4,13 @@ import { User } from "./app/model/user.interface";
 export const MOCK_USERS: User[] = [
     
     {
-      'id': 1,
-    'fullName': 'Leslie Maya',
-    'email': 'leslie@gmail.com',
-    'location': 'Los Angeles, CA',
-    'joinedDate': new Date('2010-10-02'),
-    'permissions': 'Admin',
-    'avatarUrl': '../assets/users/user-1.jpg'
+      id: 1,
+    fullName: 'Leslie Maya',
+    email: 'leslie@gmail.com',
+    location: 'Los Angeles, CA',
+    joinedDate: new Date('2010-10-02'),
+    permissions: 'Admin',
+    avatarUrl: '../assets/users/user-1.jpg'
     },
     {
     id: 2,

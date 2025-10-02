@@ -1,19 +1,20 @@
-// src/app/components/user-container/user-container.component.ts
 import { Component, OnInit } from '@angular/core';
-
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgIf } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { User } from '../../../model/user.interface';
 import { UserService } from '../../../services/users.service';
-import { FormsModule } from '@angular/forms';
+import { UserDetail } from '../user-detail/user-detail';
 import { UserRow } from '../user-row/user-row';
+
 
 @Component({
   selector: 'app-user-container',
-  imports: [CommonModule, FormsModule, UserRow],
+  imports: [CommonModule, FormsModule, UserRow, UserDetail, NgIf],
   templateUrl: './user-container.html',
   styleUrls: ['./user-container.css']
 })
 export class UserContainer implements OnInit {
+  
   users: User[] = [];
   paginatedUsers: User[] = [];
   searchTerm = '';
@@ -23,37 +24,50 @@ export class UserContainer implements OnInit {
   rowsPerPage = 10;
   pages: number[] = [];
   joinedYears: number[] = [];
+  selectedUser: User | null = null;
+  showDetailModal = false;
+  isEditing = false;
 
   constructor(private userService: UserService) {}
 
   ngOnInit() {
     this.userService.getUsers().subscribe(users => {
       this.users = users;
-      this.updateView(); // Initial render
+      this.updateView();
     });
   }
 
-  // Pure UI method: delegates to service
+  
   updateView() {
-    const result = this.userService.getFilteredAndPaginatedUsers(
-      this.searchTerm,
-      this.filterPermissions,
-      this.filterJoined,
-      this.currentPage,
-      this.rowsPerPage
-    );
+    let filtered = this.users;
 
-    this.paginatedUsers = result.paginatedUsers;
-    this.pages = result.pages;
-    this.joinedYears = result.joinedYears;
+    if (this.searchTerm) {
+      const term = this.searchTerm.toLowerCase();
+      filtered = filtered.filter(u =>
+        u.fullName.toLowerCase().includes(term) ||
+        u.email.toLowerCase().includes(term)
+      );
+    }
+
+    if (this.filterPermissions) {
+      filtered = filtered.filter(u => u.permissions === this.filterPermissions);
+    }
+
+    if (this.filterJoined) {
+      const year = parseInt(this.filterJoined);
+      filtered = filtered.filter(u => u.joinedDate.getFullYear() === year);
+    }
+
+    const totalPages = Math.ceil(filtered.length / this.rowsPerPage);
+    this.pages = Array.from({ length: totalPages }, (_, i) => i + 1);
+    const start = (this.currentPage - 1) * this.rowsPerPage;
+    this.paginatedUsers = filtered.slice(start, start + this.rowsPerPage);
+    
+    const years = new Set(this.users.map(user => user.joinedDate.getFullYear()));
+    this.joinedYears = Array.from(years).sort((a, b) => b - a);
   }
 
-  // Filter handlers (only update state + refresh view)
-  onSearchChange() { this.updateView(); }
-  onPermissionChange() { this.updateView(); }
-  onJoinedChange() { this.updateView(); }
-
-  // Pagination (only update state + refresh view)
+  // Pagination
   prevPage() {
     if (this.currentPage > 1) {
       this.currentPage--;
@@ -73,35 +87,55 @@ export class UserContainer implements OnInit {
     this.updateView();
   }
 
-  // Actions (minimal logic)
+  // Modal Actions
+  showUserDetails(user: User) {
+    this.selectedUser = { ...user };
+    this.showDetailModal = true;
+    this.isEditing = false;
+  }
+
+  editUser(user: User) {
+    this.selectedUser = { ...user };
+    this.showDetailModal = true;
+    this.isEditing = true;
+  }
+
+  onSaveUser(updatedUser: User) {
+    this.userService.updateUser(updatedUser);
+    this.showDetailModal = false;
+  }
+
+  onCloseDetail() {
+    this.showDetailModal = false;
+  }
+
+  // Delete
   deleteUser(user: User) {
     if (confirm(`Delete ${user.fullName}?`)) {
       this.userService.deleteUser(user.id);
-      // Re-fetch users to update UI
-      this.userService.getUsers().subscribe(users => {
-        this.users = users;
-        this.updateView();
-      });
     }
   }
 
+  // Export
   exportData() {
-    const csvContent = this.userService.generateCSV(this.users);
-    const blob = new Blob(['\uFEFF', csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
+    const headers = ['Full Name', 'Email', 'Location', 'Joined', 'Permissions'];
+    const rows = this.users.map(u => [
+      `"${u.fullName}"`,
+      `"${u.email}"`,
+      `"${u.location}"`,
+      `"${u.joinedDate.toISOString().split('T')[0]}"`,
+      `"${u.permissions}"`
+    ]);
+
+    let csvContent = 'data:text/csv;charset=utf-8,';
+    csvContent += [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
+
+    const encodedUri = encodeURI(csvContent);
     const link = document.createElement('a');
-    link.setAttribute('href', url);
+    link.setAttribute('href', encodedUri);
     link.setAttribute('download', 'users.csv');
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    URL.revokeObjectURL(url);
   }
-
-  // Placeholder methods
-  showUserDetails(user: User) { console.log('Show details:', user); }
-  editUser(user: User) { console.log('Edit user:', user); }
-  openNewUserModal() { console.log('+ New User clicked'); }
-
-  
 }

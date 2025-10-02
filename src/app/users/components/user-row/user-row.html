@@ -1,14 +1,32 @@
 <div class="user-row">
   <div><input type="checkbox" /></div>
   <div class="name-col">
-    <img [src]="user.avatarUrl || '../asssets/users/empty-user-image.png'" alt="Avatar" class="avatar" loading="lazy" />
+    <img [src]="user.avatarUrl || '../assets/users/empty-user-image.png'" 
+         alt="Avatar" 
+         class="avatar" 
+         loading="lazy" />
     {{ user.fullName }}
   </div>
   <div>{{ user.email }}</div>
   <div><span class="location-icon">📍</span> {{ user.location }}</div>
   <div>{{ user.joinedDate | date:'mediumDate' }}</div>
-  <div><span class="permission-badge" [class]="user.permissions.toLowerCase()">{{ user.permissions }}</span></div>
+  <div><span class="permission-badge {{ user.permissions.toLowerCase() }}">{{ user.permissions }}</span></div>
   <div class="actions">
-    <button (click)="onMoreClick()">⋯</button>
+    <button 
+      class="more-btn" 
+      (click)="toggleMenu()"
+      #moreButton>
+      ⋯
+    </button>
+
+    <div 
+      *ngIf="showMenu" 
+      class="dropdown-menu"
+      [style.top.px]="buttonPosition.top + 30"
+      [style.left.px]="buttonPosition.left">
+      <button class="dropdown-item" (click)="onView()">View</button>
+      <button class="dropdown-item" (click)="onEdit()">Edit</button>
+      <button class="dropdown-item delete" (click)="onDelete()">Delete</button>
+    </div>
   </div>
 </div>

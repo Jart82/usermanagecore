@@ -1,40 +1,30 @@
-<!-- src/app/components/user-container/user-container.component.html -->
 <div class="user-management">
-  <h2><img class="logo" src="../../../../assets/logo.png" alt="">User Management</h2>
+  <h2>User Management</h2>
 
-  <!-- Filters & Actions -->
   <div class="controls">
     <input
       type="text"
       placeholder="Search items..."
       [(ngModel)]="searchTerm"
-      (input)="onSearchChange()"
+      (input)="updateView()"
       class="search-input"
     />
     
-    <select [(ngModel)]="filterPermissions" (change)="onPermissionChange()" class="filter-select">
+    <select [(ngModel)]="filterPermissions" (change)="updateView()" class="filter-select">
       <option value="">Permissions All</option>
       <option value="Admin">Admin</option>
       <option value="Contributor">Contributor</option>
       <option value="Viewer">Viewer</option>
     </select>
 
-    <select [(ngModel)]="filterJoined" (change)="onJoinedChange()" class="filter-select">
+    <select [(ngModel)]="filterJoined" (change)="updateView()" class="filter-select">
       <option value="">Joined Anytime</option>
       <option *ngFor="let year of joinedYears" [value]="year">{{ year }}</option>
     </select>
 
-    
-    <button 
-      (click)="exportData()" 
-      class="btn-accent"
-      >
-      Export
-  </button>
-    <button class="btn-primary" (click)="openNewUserModal()">+ New User</button>
+    <button (click)="exportData()" class="btn-accent">Export</button>
   </div>
 
-  <!-- Table Header -->
   <div class="table-header">
     <div><input type="checkbox" /></div>
     <div>Full Name</div>
@@ -45,11 +35,8 @@
     <div></div>
   </div>
 
-  <!-- User Rows -->
-  <!-- Replace the table header and user-list with this -->
-<div class="user-list">
-  <div class="user-cards" *ngIf="paginatedUsers.length > 0">
-    <app-user-row
+  <div class="user-list">
+    <app-user-row 
       *ngFor="let user of paginatedUsers"
       [user]="user"
       (viewDetails)="showUserDetails(user)"
@@ -57,15 +44,9 @@
       (deleteUser)="deleteUser(user)">
     </app-user-row>
   </div>
-  <div *ngIf="paginatedUsers.length === 0" class="no-results">
-    No users found.
-  </div>
-</div>
 
-  <!-- Pagination -->
   <div class="pagination" *ngIf="pages.length > 1">
     <button (click)="prevPage()" [disabled]="currentPage === 1" class="page-nav"><</button>
-    
     <div class="page-numbers">
       <button
         *ngFor="let page of pages"
@@ -75,9 +56,7 @@
         {{ page }}
       </button>
     </div>
-
     <button (click)="nextPage()" [disabled]="currentPage === pages.length" class="page-nav">></button>
-
     <div class="rows-per-page">
       Show:
       <select [(ngModel)]="rowsPerPage" (change)="updateView()" class="rows-select">
@@ -87,4 +66,12 @@
       </select>
     </div>
   </div>
+
+  <!-- Detail Modal -->
+  <app-user-detail
+    *ngIf="showDetailModal && selectedUser"
+    [user]="selectedUser"
+    (save)="onSaveUser($event)"
+    (close)="onCloseDetail()">
+  </app-user-detail>
 </div>

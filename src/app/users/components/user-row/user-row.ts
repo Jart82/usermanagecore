@@ -1,12 +1,13 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { User } from '../../../model/user.interface';
-import { DatePipe } from '@angular/common';
+import { CommonModule, NgIf } from '@angular/common';
+
 
 @Component({
   selector: 'app-user-row',
-  imports: [DatePipe],
+  imports: [CommonModule],
   templateUrl: './user-row.html',
-  styleUrl: './user-row.css'
+  styleUrls: ['./user-row.css']
 })
 export class UserRow {
   @Input() user!: User;
@@ -14,9 +15,45 @@ export class UserRow {
   @Output() editUser = new EventEmitter<User>();
   @Output() deleteUser = new EventEmitter<User>();
 
-  onMoreClick() {
-    // Trigger dropdown/modal with options: View, Edit, Delete
-    console.log('More clicked for:', this.user);
+  showMenu = false;
+  buttonPosition = { top: 0, left: 0 };
+
+  @ViewChild('moreButton', { static: false }) moreButton!: ElementRef;
+
+  toggleMenu() {
+    if (!this.showMenu) {
+      const rect = this.moreButton.nativeElement.getBoundingClientRect();
+      this.buttonPosition = { 
+        top: rect.top + window.scrollY, 
+        left: rect.left + window.scrollX 
+      };
+    }
+    this.showMenu = !this.showMenu;
+  }
+
+  closeMenu() {
+    this.showMenu = false;
+  }
+
+  onView() {
     this.viewDetails.emit(this.user);
+    this.closeMenu();
+  }
+
+  onEdit() {
+    this.editUser.emit(this.user);
+    this.closeMenu();
+  }
+
+  onDelete() {
+    this.deleteUser.emit(this.user);
+    this.closeMenu();
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: Event) {
+    if (this.showMenu && this.moreButton && !this.moreButton.nativeElement.contains(event.target)) {
+      this.closeMenu();
+    }
   }
 }

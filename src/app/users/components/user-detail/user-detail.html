@@ -1,1 +1,85 @@
-<p>user-detail works!</p>
+<div class="modal-overlay" (click)="onClose()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>{{ isEditing ? 'Edit User' : 'User Details' }}</h2>
+      <button class="close-btn" (click)="onClose()">&times;</button>
+    </div>
+
+    <div class="modal-body">
+      <div class="avatar-section">
+        <img 
+          [src]="user.avatarUrl || '../assets/users/empty-user-image.png'" 
+          alt="Avatar"
+          class="detail-avatar">
+        <span class="joined-badge">Joined {{ user.joinedDate | date:'MMM y' }}</span>
+      </div>
+
+      <div class="form-group">
+        <label>Full Name</label>
+        <input 
+          *ngIf="isEditing" 
+          [(ngModel)]="user.fullName" 
+          type="text" 
+          class="form-input">
+        <span *ngIf="!isEditing" class="form-value">{{ user.fullName }}</span>
+      </div>
+
+      <div class="form-group">
+        <label>Email</label>
+        <input 
+          *ngIf="isEditing" 
+          [(ngModel)]="user.email" 
+          type="email" 
+          class="form-input">
+        <span *ngIf="!isEditing" class="form-value">{{ user.email }}</span>
+      </div>
+
+      <div class="form-group">
+        <label>Location</label>
+        <input 
+          *ngIf="isEditing" 
+          [(ngModel)]="user.location" 
+          type="text" 
+          class="form-input">
+        <span *ngIf="!isEditing" class="form-value">{{ user.location }}</span>
+      </div>
+
+      <div class="form-group">
+        <label>Permissions</label>
+        <select 
+          *ngIf="isEditing" 
+          [(ngModel)]="user.permissions" 
+          class="form-select">
+          <option value="Admin">Admin</option>
+          <option value="Contributor">Contributor</option>
+          <option value="Viewer">Viewer</option>
+        </select>
+        <span *ngIf="!isEditing" class="form-value">
+          <span class="permission-badge {{ user.permissions.toLowerCase() }}">
+            {{ user.permissions }}
+          </span>
+        </span>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button 
+        *ngIf="!isEditing" 
+        class="btn btn-secondary" 
+        (click)="startEditing()">
+        Edit
+      </button>
+      <button 
+        *ngIf="isEditing" 
+        class="btn btn-primary" 
+        (click)="onSave()">
+        Save Changes
+      </button>
+      <button 
+        class="btn btn-secondary" 
+        (click)="onClose()">
+        {{ isEditing ? 'Cancel' : 'Close' }}
+      </button>
+    </div>
+  </div>
+</div>

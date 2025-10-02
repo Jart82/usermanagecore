@@ -4,58 +4,149 @@
   padding: 10px;
   border-bottom: 1px solid #444;
   align-items: center;
+}
 
-  &:hover {
-    background: #2a2a2a;
+.user-row:hover {
+  background: #2a2a2a;
+}
+
+.name-col {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+}
+
+.location-icon {
+  margin-right: 5px;
+}
+
+.permission-badge {
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+.permission-badge.admin {
+  background: #2e9e40;
+  color: white;
+}
+
+.permission-badge.contributor {
+  background: #3498db;
+  color: white;
+}
+
+.permission-badge.viewer {
+  background: #2c3e50;
+  color: white;
+}
+
+.actions {
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+.more-btn {
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  color: var(--text-secondary);
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+}
+
+.more-btn:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+
+
+.dropdown-item {
+  display: block;
+  width: 100%;
+  padding: 8px 16px;
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  text-align: left;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.dropdown-item:hover {
+  background: var(--bg-tertiary);
+}
+
+.dropdown-item.delete {
+  color: #e74c3c;
+}
+
+.dropdown-item.delete:hover {
+  background: rgba(231, 76, 60, 0.1);
+}
+
+/* Mobile Responsive */
+@media (max-width: 480px) {
+  /* Adjust row layout */
+  .user-row {
+    flex-shrink: 0;
+    grid-template-columns: 30px 1.5fr 2fr 1fr 1fr 1fr 30px !important;
+    gap: 15px !important;
+    padding: 8px 12px !important;
   }
 
-  .name-col {
+  /* ✅ CORRECT: Target cells INSIDE user rows */
+  .user-row > div:nth-child(3),  /* Email */
+  .user-row > div:nth-child(4),  /* Location */
+  .user-row > div:nth-child(5),  /* Joined */
+  .user-row > div:nth-child(6) { /* Permissions */
+    display: none !important;
+  }
+
+  /* Adjust remaining visible columns */
+  .user-row > div:nth-child(2) { /* Full Name */
+    grid-column: 2 / span 3; /* Take extra space */
+  }
+}
+
+@media (max-width: 768px) {
+  /* Adjust row layout */
+  .user-row {
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    gap: 8px;
+    padding: 12px !important;
+    gap: 8px !important;
 
-    .avatar {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-    }
   }
 
-  .location-icon {
-    margin-right: 5px;
+  /* ✅ CORRECT: Target cells INSIDE user rows */
+  .user-row > div:nth-child(3),  /* Email */
+  .user-row > div:nth-child(5),  /* Joined */
+  .user-row > div:nth-child(6) { /* Permissions */
+    display: none !important;
   }
 
-  .permission-badge {
-    padding: 2px 8px;
-    border-radius: 4px;
-    font-size: 0.8rem;
-    font-weight: bold;
-
-    &.admin {
-      background: #e74c3c;
-      color: white;
-    }
-
-    &.contributor {
-      background: #3498db;
-      color: white;
-    }
-
-    &.viewer {
-      background: #2c3e50;
-      color: white;
-    }
+  /* Adjust remaining visible columns */
+  .user-row > div:nth-child(2) { /* Full Name */
+    grid-column: 2 / span 2; /* Take extra space */
   }
 
-  .actions button {
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    cursor: pointer;
-    color: #aaa;
-
-    &:hover {
-      color: white;
-    }
+  .user-row > div:nth-child(4) { /* Location */
+    grid-column: 3 / span 2; /* Take extra space */
   }
 }
